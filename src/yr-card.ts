@@ -11,7 +11,7 @@ import {
 
 import './editor';
 
-import { BoilerplateCardConfig } from './types';
+import { YrCardConfig } from './types';
 import { actionHandler } from './action-handler-directive';
 import { CARD_VERSION } from './const';
 
@@ -37,9 +37,9 @@ export class YrCard extends LitElement {
 
   // TODO Add any properities that should cause your element to re-render here
   @property() public hass?: HomeAssistant;
-  @property() private _config?: BoilerplateCardConfig;
+  @property() private _config?: YrCardConfig;
 
-  public setConfig(config: BoilerplateCardConfig): void {
+  public setConfig(config: YrCardConfig): void {
     // TODO Check for required fields and that they are of the proper format
     if (!config || config.show_error) {
       throw new Error(localize('common.invalid_configuration'));
@@ -50,7 +50,7 @@ export class YrCard extends LitElement {
     }
 
     this._config = {
-      name: 'Boilerplate',
+      name: 'Yr',
       ...config,
     };
   }
@@ -84,7 +84,8 @@ export class YrCard extends LitElement {
         })}
         tabindex="0"
         aria-label=${`Boilerplate: ${this._config.entity}`}
-      ></ha-card>
+      >
+      </ha-card>
     `;
   }
 
