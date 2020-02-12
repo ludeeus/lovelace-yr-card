@@ -6,8 +6,10 @@ import {
   ActionHandlerEvent,
   handleAction,
   LovelaceCardEditor,
+  LovelaceCard,
   getLovelace,
 } from 'custom-card-helpers';
+import dayjs from 'dayjs';
 
 import './editor';
 
@@ -26,10 +28,11 @@ console.info(
 
 // TODO Name your custom element
 @customElement('yr-card')
-export class YrCard extends LitElement {
+export class YrCard extends LitElement implements LovelaceCard {
   public static async getConfigElement(): Promise<LovelaceCardEditor> {
     return document.createElement('yr-card-editor') as LovelaceCardEditor;
   }
+
 
   public static getStubConfig(): object {
     return {};
@@ -63,6 +66,8 @@ export class YrCard extends LitElement {
     if (!this._config || !this.hass) {
       return html``;
     }
+    const state = this.hass.states['sensor.yr_forecast'];
+    console.log('*** state', state.attributes.forecast);
 
     // TODO Check for stateObj or other necessary things and render a warning if missing
     if (this._config.show_warning) {
@@ -75,7 +80,6 @@ export class YrCard extends LitElement {
 
     return html`
       <ha-card
-        .header=${this._config.name}
         @action=${this._handleAction}
         .actionHandler=${actionHandler({
           hasHold: hasAction(this._config.hold_action),
@@ -83,8 +87,28 @@ export class YrCard extends LitElement {
           repeat: this._config.hold_action ? this._config.hold_action.repeat : undefined,
         })}
         tabindex="0"
-        aria-label=${`Boilerplate: ${this._config.entity}`}
+        aria-label=${`Yr: ${this._config.entity}`}
       >
+        <ha-card>
+          <table>
+            <tr>
+              ${state.attributes.forecast.slice(0, 5).map(entity => {
+                return html`
+                  <td style="padding:24px;">
+                    <div class="period">${dayjs(entity.from).format('HH')} - ${dayjs(entity.to).format('HH')}</div>
+                    <img height="50px" src="https://www.yr.no/grafikk/sym/v2016/png/100/${entity.symbolVar}.png" />
+                    <div class="temperature">${entity.temperature}&deg;</div>
+                    ${entity.precipitation === 0
+                      ? html`
+                          <div>${entity.precipitation} mm</div>
+                        `
+                      : html``}
+                  </td>
+                `;
+              })}
+            </tr>
+          </table>
+        </ha-card>
       </ha-card>
     `;
   }
@@ -102,6 +126,14 @@ export class YrCard extends LitElement {
         color: black;
         background-color: #fce588;
         padding: 8px;
+      }
+      .period {
+        font-size: 0.8rem;
+      }
+      .temperature {
+        font-size: 1.8em;
+        font-weight: 300;
+        text-align: center;
       }
     `;
   }
