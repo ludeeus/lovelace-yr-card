@@ -1,7 +1,7 @@
 {
-  "name": "boilerplate-card",
-  "version": "1.1.7",
-  "description": "Lovelace boilerplate-card",
+  "name": "yr-card",
+  "version": "0.0.1",
+  "description": "Lovelace yr-card",
   "keywords": [
     "home-assistant",
     "homeassistant",
@@ -10,9 +10,9 @@
     "lovelace",
     "custom-cards"
   ],
-  "module": "boilerplate-card.js",
-  "repository": "git@github.com:custom_cards/boilerplate-card.git",
-  "author": "Ian Richardson <iantrich@gmail.com>",
+  "module": "yr-card.js",
+  "repository": "git@github.com:toringer/lovelace-yr-card.git",
+  "author": "Tor Inge Redalen <toringe@redalen.no>",
   "license": "MIT",
   "dependencies": {
     "custom-card-helpers": "^1.3.9",

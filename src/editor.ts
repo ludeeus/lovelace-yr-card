@@ -44,8 +44,8 @@ const options = {
   },
 };
 
-@customElement('boilerplate-card-editor')
-export class BoilerplateCardEditor extends LitElement implements LovelaceCardEditor {
+@customElement('yr-card-editor')
+export class YrCardEditor extends LitElement implements LovelaceCardEditor {
   @property() public hass?: HomeAssistant;
   @property() private _config?: BoilerplateCardConfig;
   @property() private _toggle?: boolean;

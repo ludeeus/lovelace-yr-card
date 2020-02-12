@@ -19,16 +19,16 @@ import { localize } from './localize/localize';
 
 /* eslint no-console: 0 */
 console.info(
-  `%c  BOILERPLATE-CARD \n%c  ${localize('common.version')} ${CARD_VERSION}    `,
-  'color: orange; font-weight: bold; background: black',
+  `%c  YR-CARD %c ${CARD_VERSION} `,
+  'color: white; font-weight: bold; background: black',
   'color: white; font-weight: bold; background: dimgray',
 );
 
 // TODO Name your custom element
-@customElement('boilerplate-card')
-export class BoilerplateCard extends LitElement {
+@customElement('yr-card')
+export class YrCard extends LitElement {
   public static async getConfigElement(): Promise<LovelaceCardEditor> {
-    return document.createElement('boilerplate-card-editor') as LovelaceCardEditor;
+    return document.createElement('yr-card-editor') as LovelaceCardEditor;
   }
 
   public static getStubConfig(): object {
