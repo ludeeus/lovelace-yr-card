@@ -32,7 +32,7 @@ const plugins = [
 
 export default [
   {
-    input: 'src/boilerplate-card.ts',
+    input: 'src/yr-card.ts',
     output: {
       dir: 'dist',
       format: 'es',
