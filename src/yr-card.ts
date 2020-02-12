@@ -28,11 +28,10 @@ console.info(
 
 // TODO Name your custom element
 @customElement('yr-card')
-export class YrCard extends LitElement implements LovelaceCard {
+export class YrCard extends LitElement {
   public static async getConfigElement(): Promise<LovelaceCardEditor> {
     return document.createElement('yr-card-editor') as LovelaceCardEditor;
   }
-
 
   public static getStubConfig(): object {
     return {};
