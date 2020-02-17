@@ -89,7 +89,7 @@ export class YrCard extends LitElement {
         aria-label=${`Yr: ${this._config.entity}`}
       >
         <ha-card>
-          <table>
+          <table style="width: 100%">
             <tr>
               ${state.attributes.forecast.slice(0, 5).map(entity => {
                 return html`
