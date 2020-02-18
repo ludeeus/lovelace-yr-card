@@ -43,16 +43,11 @@ export class YrCard extends LitElement {
 
   public setConfig(config: YrCardConfig): void {
     // TODO Check for required fields and that they are of the proper format
-    if (!config || config.show_error) {
+    if (!config) {
       throw new Error(localize('common.invalid_configuration'));
     }
 
-    if (config.test_gui) {
-      getLovelace().setEditMode(true);
-    }
-
     this._config = {
-      name: 'Yr',
       ...config,
     };
   }
@@ -65,17 +60,9 @@ export class YrCard extends LitElement {
     if (!this._config || !this.hass) {
       return html``;
     }
-    const state = this.hass.states['sensor.yr_forecast'];
-    console.log('*** state', state.attributes.forecast);
+    const state = this.hass.states[this._config.entity];
 
-    // TODO Check for stateObj or other necessary things and render a warning if missing
-    if (this._config.show_warning) {
-      return html`
-        <ha-card>
-          <div class="warning">${localize('common.show_warning')}</div>
-        </ha-card>
-      `;
-    }
+    //console.log('*** state', state.attributes.forecast);
 
     return html`
       <ha-card
@@ -89,24 +76,22 @@ export class YrCard extends LitElement {
         aria-label=${`Yr: ${this._config.entity}`}
       >
         <ha-card>
-          <table style="width: 100%">
-            <tr>
-              ${state.attributes.forecast.slice(0, 5).map(entity => {
-                return html`
-                  <td style="padding:24px;">
-                    <div class="period">${dayjs(entity.from).format('HH')} - ${dayjs(entity.to).format('HH')}</div>
-                    <img height="50px" src="https://www.yr.no/grafikk/sym/v2016/png/100/${entity.symbolVar}.png" />
-                    <div class="temperature">${entity.temperature}&deg;</div>
-                    ${entity.precipitation === 0
-                      ? html`
-                          <div>${entity.precipitation} mm</div>
-                        `
-                      : html``}
-                  </td>
-                `;
-              })}
-            </tr>
-          </table>
+          <div class="container">
+            ${state.attributes.forecast.slice(0, 5).map(entity => {
+              return html`
+                <div class="item">
+                  <div class="period">${dayjs(entity.from).format('HH')} - ${dayjs(entity.to).format('HH')}</div>
+                  <img class="image" src="https://www.yr.no/grafikk/sym/v2016/png/100/${entity.symbolVar}.png" />
+                  <div class="temperature">${entity.temperature}&deg;</div>
+                  ${entity.precipitation === 0
+                    ? html`
+                        <div class="precipitation">${entity.precipitation} mm</div>
+                      `
+                    : html``}
+                </div>
+              `;
+            })}
+          </div>
         </ha-card>
       </ha-card>
     `;
@@ -130,9 +115,30 @@ export class YrCard extends LitElement {
         font-size: 0.8rem;
       }
       .temperature {
-        font-size: 1.8em;
-        font-weight: 300;
+        font-size: 1.5em;
+        font-weight: 400;
         text-align: center;
+      }
+      .container {
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: space-between;
+        align-items: center;
+        flex-direction: row;
+        // width: 100%;
+        padding: 10px;
+      }
+      .item {
+        text-align: center;
+        width: 50%;
+      }
+      .image {
+        height: 50px;
+        padding-top: 8px;
+        padding-bottom: 4px;
+      }
+      .precipitation {
+        font-size: 0.8em;
       }
     `;
   }
