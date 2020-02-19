@@ -3443,7 +3443,7 @@ let YrCard = class YrCard extends LitElement {
                   <div class="period">${dayjs_min(entity.from).format('HH')} - ${dayjs_min(entity.to).format('HH')}</div>
                   <img class="image" src="https://www.yr.no/grafikk/sym/v2016/png/100/${entity.symbolVar}.png" />
                   <div class="temperature">${entity.temperature}&deg;</div>
-                  ${entity.precipitation === 0
+                  ${parseFloat(entity.precipitation) !== 0
                 ? html `
                         <div class="precipitation">${entity.precipitation} mm</div>
                       `
