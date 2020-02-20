@@ -83,11 +83,7 @@ export class YrCard extends LitElement {
                   <div class="period">${dayjs(entity.from).format('HH')} - ${dayjs(entity.to).format('HH')}</div>
                   <img class="image" src="https://www.yr.no/grafikk/sym/v2016/png/100/${entity.symbolVar}.png" />
                   <div class="temperature">${entity.temperature}&deg;</div>
-                  ${parseFloat(entity.precipitation) !== 0
-                    ? html`
-                        <div class="precipitation">${entity.precipitation} mm</div>
-                      `
-                    : html``}
+                  ${this.precipitation(entity.precipitationMinValue, entity.precipitationMaxvalue)}
                 </div>
               `;
             })}
@@ -97,6 +93,18 @@ export class YrCard extends LitElement {
     `;
   }
 
+  private precipitation(precipitationMinValueString: string, precipitationMaxvalueString: string): TemplateResult {
+    const precipitationMinValue = parseFloat(precipitationMinValueString);
+    const precipitationMaxvalue = parseFloat(precipitationMaxvalueString);
+
+    if (precipitationMinValue === 0 && precipitationMaxvalue === 0) {
+      return html``;
+    } else {
+      return html`
+        <div class="precipitation">${precipitationMinValue} - ${precipitationMaxvalue} mm</div>
+      `;
+    }
+  }
   private _handleAction(ev: ActionHandlerEvent): void {
     if (this.hass && this._config && ev.detail.action) {
       handleAction(this, this.hass, this._config, ev.detail.action);
