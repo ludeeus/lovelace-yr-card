@@ -329,22 +329,24 @@ t.exports=function(t){t=t&&t.hasOwnProperty("default")?t.default:t;var e={aliceb
         aria-label=${`Yr: ${this._config.entity}`}
       >
         <ha-card>
-          <div class="container">
-            ${t.attributes.forecast.slice(0,5).map(t=>I`
-                <div class="item">
-                  <div class="period">${kt(t.from).format("HH")} - ${kt(t.to).format("HH")}</div>
-                  <img class="image" src="https://www.yr.no/grafikk/sym/v2016/png/100/${t.symbolVar}.png" />
-                  <div class="temperature">${t.temperature}&deg;</div>
-                  ${this.precipitation(t.precipitationMinValue,t.precipitationMaxvalue)}
-                </div>
-              `)}
+          <div>
+            <canvas height="90" id="myChart"></canvas>
+          </div>
+          <div style="margin-top: -124px;">
+            <div class="container">
+              ${t.attributes.forecast.slice(0,5).map(t=>I`
+                  <div class="item">
+                    <div class="period">${kt(t.from).format("HH")} - ${kt(t.to).format("HH")}</div>
+                    <img class="image" src="https://www.yr.no/grafikk/sym/v2016/png/100/${t.symbolVar}.png" />
+                    <div class="temperature">${t.temperature}&deg;</div>
+                    ${this.precipitation(t.precipitationMinValue,t.precipitationMaxvalue)}
+                  </div>
+                `)}
+            </div>
           </div>
         </ha-card>
-        <div>
-          <canvas height="100" id="myChart" style="position: absolute; top: 0;"></canvas>
-        </div>
       </ha-card>
-    `}updated(){var t,e,n;console.log("*** met updated");const i=null===(e=null===(t=this.hass)||void 0===t?void 0:t.states["sensor.met_no_now_cast"])||void 0===e?void 0:e.attributes.forecast,r=null===(n=this.shadowRoot)||void 0===n?void 0:n.getElementById("myChart");if(r.innerHTML="",r){const t=i.map(t=>({x:new Date(t.from).getTime(),y:parseFloat(t.value)}));console.log("*** nowCast",i);const e=r.getContext("2d");new Pt(e,{type:"line",data:{labels:i.map(t=>new Date(t.from).toTimeString()),datasets:[{label:"My First dataset",backgroundColor:"rgba(32, 123, 250, 0.3)",data:t,fill:!0,pointStyle:"line"}]},options:{responsive:!0,legend:{display:!1},tooltips:{mode:"index",intersect:!1},hover:{mode:"nearest",intersect:!0},scales:{xAxes:[{display:!1}],yAxes:[{display:!1,ticks:{beginAtZero:!0,suggestedMax:2.5}}]}}})}}precipitation(t,e){const n=parseFloat(t),i=parseFloat(e);return 0===n&&0===i?I``:I`
+    `}updated(){var t,e,n;console.log("*** met updated");const i=null===(e=null===(t=this.hass)||void 0===t?void 0:t.states["sensor.met_no_now_cast"])||void 0===e?void 0:e.attributes.forecast,r=null===(n=this.shadowRoot)||void 0===n?void 0:n.getElementById("myChart");if(r.innerHTML="",r){const t=i.map(t=>({x:new Date(t.from).getTime(),y:parseFloat(t.value)}));console.log("*** nowCast",i);const e=r.getContext("2d");new Pt(e,{type:"line",data:{labels:i.map(t=>new Date(t.from).toTimeString()),datasets:[{label:"My First dataset",backgroundColor:"rgba(227, 227, 227, 0.5)",data:t,fill:!0,pointStyle:"line"}]},options:{responsive:!0,legend:{display:!1},tooltips:{mode:"index",intersect:!1},hover:{mode:"nearest",intersect:!0},scales:{xAxes:[{display:!1}],yAxes:[{display:!1,ticks:{beginAtZero:!0,suggestedMax:2.5}}]}}})}}precipitation(t,e){const n=parseFloat(t),i=parseFloat(e);return 0===n&&0===i?I``:I`
         <div class="precipitation">${n} - ${i} mm</div>
       `}_handleAction(t){this.hass&&this._config&&t.detail.action&&_t(this,this.hass,this._config,t.detail.action)}static get styles(){return tt`
       .warning {
