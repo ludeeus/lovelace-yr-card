@@ -89,7 +89,9 @@ export class YrCard extends LitElement {
             })}
           </div>
         </ha-card>
-        <canvas id="myChart"></canvas>
+        <div>
+          <canvas height="100" id="myChart"></canvas>
+        </div>
       </ha-card>
     `;
   }
@@ -100,6 +102,8 @@ export class YrCard extends LitElement {
     const nowCast = met?.attributes.forecast;
 
     const element: any = this.shadowRoot?.getElementById('myChart');
+    element.innerHTML = '';
+
     //nowCast.find(s => parseFloat(s.value) > 0) > 0 &&∆
     if (element) {
       const metData = nowCast.map(cast => ({ x: new Date(cast.from).getTime(), y: parseFloat(cast.value) }));
