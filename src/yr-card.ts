@@ -6,8 +6,6 @@ import {
   ActionHandlerEvent,
   handleAction,
   LovelaceCardEditor,
-  LovelaceCard,
-  getLovelace,
 } from 'custom-card-helpers';
 import dayjs from 'dayjs';
 
@@ -96,14 +94,16 @@ export class YrCard extends LitElement {
     `;
   }
 
-  protected firstUpdated(): void {
-    const element: any = this.shadowRoot?.getElementById('myChart');
+  protected updated(): void {
+    console.log('*** met updated');
+    const met = this.hass?.states['sensor.met_no_now_cast'];
+    const nowCast = met?.attributes.forecast;
 
+    const element: any = this.shadowRoot?.getElementById('myChart');
+    //nowCast.find(s => parseFloat(s.value) > 0) > 0 &&∆
     if (element) {
-      const met = this.hass?.states['sensor.met_no_now_cast'];
-      const nowCast = met?.attributes.forecast;
       const metData = nowCast.map(cast => ({ x: new Date(cast.from).getTime(), y: parseFloat(cast.value) }));
-      console.log('***', metData);
+      // console.log('***', metData);
       console.log('*** nowCast', nowCast);
 
       const ctx = element.getContext('2d');
@@ -114,8 +114,8 @@ export class YrCard extends LitElement {
           datasets: [
             {
               label: 'My First dataset',
-              backgroundColor: 'red',
-              borderColor: 'red',
+              backgroundColor: 'blue',
+              borderColor: 'blue',
               data: metData,
               fill: true,
               pointStyle: 'line',
@@ -124,6 +124,9 @@ export class YrCard extends LitElement {
         },
         options: {
           responsive: true,
+          legend: {
+            display: false,
+          },
           tooltips: {
             mode: 'index',
             intersect: false,
@@ -143,6 +146,7 @@ export class YrCard extends LitElement {
                 display: true,
                 ticks: {
                   beginAtZero: true,
+                  suggestedMax: 2.5,
                 },
               },
             ],
@@ -150,8 +154,6 @@ export class YrCard extends LitElement {
         },
       });
     }
-
-    console.log('*** yr firstUpdated');
   }
 
   private precipitation(precipitationMinValueString: string, precipitationMaxvalueString: string): TemplateResult {
