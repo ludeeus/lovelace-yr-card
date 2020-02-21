@@ -90,7 +90,7 @@ export class YrCard extends LitElement {
           </div>
         </ha-card>
         <div>
-          <canvas height="100" id="myChart"></canvas>
+          <canvas height="100" id="myChart" style="position: absolute; top: 0;"></canvas>
         </div>
       </ha-card>
     `;
@@ -118,8 +118,8 @@ export class YrCard extends LitElement {
           datasets: [
             {
               label: 'My First dataset',
-              backgroundColor: 'blue',
-              borderColor: 'blue',
+              backgroundColor: 'rgba(32, 123, 250, 0.3)',
+              // borderColor: 'blue',
               data: metData,
               fill: true,
               pointStyle: 'line',
@@ -147,7 +147,7 @@ export class YrCard extends LitElement {
             ],
             yAxes: [
               {
-                display: true,
+                display: false,
                 ticks: {
                   beginAtZero: true,
                   suggestedMax: 2.5,
