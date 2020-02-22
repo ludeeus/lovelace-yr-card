@@ -64,7 +64,7 @@ export class YrCardEditor extends LitElement implements LovelaceCardEditor {
 
   get _entity(): string {
     if (this._config) {
-      return this._config.entity || '';
+      return this._config.entities[0] || '';
     }
 
     return '';

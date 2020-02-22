@@ -1,12 +1,5 @@
 import { LitElement, html, customElement, property, CSSResult, TemplateResult, css, PropertyValues } from 'lit-element';
-import {
-  HomeAssistant,
-  hasConfigOrEntityChanged,
-  hasAction,
-  ActionHandlerEvent,
-  handleAction,
-  LovelaceCardEditor,
-} from 'custom-card-helpers';
+import { HomeAssistant, hasAction, ActionHandlerEvent, handleAction, LovelaceCardEditor } from 'custom-card-helpers';
 import dayjs from 'dayjs';
 
 import './editor';
@@ -52,15 +45,30 @@ export class YrCard extends LitElement {
   }
 
   protected shouldUpdate(changedProps: PropertyValues): boolean {
-    return hasConfigOrEntityChanged(this, changedProps, false);
+    if (changedProps.has('_config')) {
+      return true;
+    }
+
+    const oldHass = changedProps.get('hass') as HomeAssistant | undefined;
+
+    if (!this._config || !oldHass) {
+      return true;
+    }
+
+    for (const entity of this._config.entities) {
+      if (oldHass.states[entity] !== this.hass?.states[entity]) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   protected render(): TemplateResult | void {
-    console.log('*** yr render');
     if (!this._config || !this.hass) {
       return html``;
     }
-    const state = this.hass.states[this._config.entity];
+    const state = this.hass.states[this._config.entities[0]];
 
     //console.log('*** state', state.attributes.forecast);
 
@@ -73,32 +81,38 @@ export class YrCard extends LitElement {
           repeat: this._config.hold_action ? this._config.hold_action.repeat : undefined,
         })}
         tabindex="0"
-        aria-label=${`Yr: ${this._config.entity}`}
+        aria-label=${`Yr: ${this._config.name}`}
       >
         <ha-card>
-          <div class="container">
-            ${state.attributes.forecast.slice(0, 5).map(entity => {
-              return html`
-                <div class="item">
-                  <div class="period">${dayjs(entity.from).format('HH')} - ${dayjs(entity.to).format('HH')}</div>
-                  <img class="image" src="https://www.yr.no/grafikk/sym/v2016/png/100/${entity.symbolVar}.png" />
-                  <div class="temperature">${entity.temperature}&deg;</div>
-                  ${this.precipitation(entity.precipitationMinValue, entity.precipitationMaxvalue)}
-                </div>
-              `;
-            })}
+          <div>
+            <canvas height="90" id="myChart"></canvas>
+          </div>
+          <div style="margin-top: -124px;">
+            <div class="container">
+              ${state.attributes.forecast.slice(0, 5).map(entity => {
+                return html`
+                  <div class="item">
+                    <div class="period">${dayjs(entity.from).format('HH')} - ${dayjs(entity.to).format('HH')}</div>
+                    <img class="image" src="https://www.yr.no/grafikk/sym/v2016/png/100/${entity.symbolVar}.png" />
+                    <div class="temperature">${entity.temperature}&deg;</div>
+                    ${this.precipitation(entity.precipitationMinValue, entity.precipitationMaxvalue)}
+                  </div>
+                `;
+              })}
+            </div>
           </div>
         </ha-card>
-        <div>
-          <canvas height="100" id="myChart" style="position: absolute; top: 0;"></canvas>
-        </div>
       </ha-card>
     `;
   }
 
   protected updated(): void {
     console.log('*** met updated');
-    const met = this.hass?.states['sensor.met_no_now_cast'];
+    if (!this._config || !this.hass) {
+      return;
+    }
+
+    const met = this.hass?.states[this._config.entities[1]];
     const nowCast = met?.attributes.forecast;
 
     const element: any = this.shadowRoot?.getElementById('myChart');
@@ -108,7 +122,7 @@ export class YrCard extends LitElement {
     if (element) {
       const metData = nowCast.map(cast => ({ x: new Date(cast.from).getTime(), y: parseFloat(cast.value) }));
       // console.log('***', metData);
-      console.log('*** nowCast', nowCast);
+      // console.log('*** nowCast', nowCast);
 
       const ctx = element.getContext('2d');
       const myChart = new Chart(ctx, {
@@ -118,7 +132,7 @@ export class YrCard extends LitElement {
           datasets: [
             {
               label: 'My First dataset',
-              backgroundColor: 'rgba(32, 123, 250, 0.3)',
+              backgroundColor: 'rgba(227, 227, 227, 0.5)',
               // borderColor: 'blue',
               data: metData,
               fill: true,
