@@ -84,10 +84,10 @@ export class YrCard extends LitElement {
         aria-label=${`Yr: ${this._config.name}`}
       >
         <ha-card>
-          <div>
+          <div style="height: 130px;">
             <canvas height="90" id="myChart"></canvas>
           </div>
-          <div style="margin-top: -124px;">
+          <div style="margin-top: -124px;padding-top:6px; padding-bottom:6px;">
             <div class="container">
               ${state.attributes.forecast.slice(0, 5).map(entity => {
                 return html`
@@ -105,6 +105,8 @@ export class YrCard extends LitElement {
       </ha-card>
     `;
   }
+
+  private myChart;
 
   protected updated(): void {
     console.log('*** met updated');
@@ -125,15 +127,16 @@ export class YrCard extends LitElement {
       // console.log('*** nowCast', nowCast);
 
       const ctx = element.getContext('2d');
-      const myChart = new Chart(ctx, {
+      this.myChart = new Chart(ctx, {
         type: 'line',
         data: {
           labels: nowCast.map(cast => new Date(cast.from).toTimeString()),
           datasets: [
             {
               label: 'My First dataset',
-              backgroundColor: 'rgba(227, 227, 227, 0.5)',
-              // borderColor: 'blue',
+              backgroundColor: 'rgba(227, 227, 227, 0.4)',
+              borderColor: 'transparent',
+              // borderWidth: 1,
               data: metData,
               fill: true,
               pointStyle: 'line',
@@ -171,6 +174,7 @@ export class YrCard extends LitElement {
           },
         },
       });
+      this.myChart.update();
     }
   }
 
@@ -212,10 +216,9 @@ export class YrCard extends LitElement {
         display: flex;
         flex-wrap: nowrap;
         justify-content: space-between;
-        align-items: center;
+        align-items: flex-start;
         flex-direction: row;
-        // width: 100%;
-        padding: 10px;
+        // padding: 10px;
       }
       .item {
         text-align: center;
@@ -227,7 +230,7 @@ export class YrCard extends LitElement {
         padding-bottom: 4px;
       }
       .precipitation {
-        font-size: 0.8em;
+        font-size: 0.7rem;
       }
     `;
   }
